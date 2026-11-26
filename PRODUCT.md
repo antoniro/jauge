@@ -73,9 +73,9 @@ Terms used in the code, the interface and these documents are defined in `GLOSSA
 ## Evidence on Hand
 
 - A snapshot of the Régie feed used by the mockups: `public/data/stations.json` (about 2,470 stations).
-- Working mockups of every screen: `src/prototype/main-screen-fable/` (variant B3). Screenshots: `docs/design/img/`.
+- Screenshots of the mockups the design was settled on: `docs/design/img/`. The mockups themselves are not kept in the repository.
 - No testimonials, usage numbers or press exist. Do not invent any.
-- The price history shown in the mockups is invented sample data.
+- The price history shown in those screenshots is invented sample data. Real history starts on 2026-11-26, the day the collector first ran.
 
 ## Product Principles
 

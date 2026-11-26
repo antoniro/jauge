@@ -2,7 +2,7 @@
 
 This is the companion to [`DESIGN.md`](../../DESIGN.md). That file says how things look; this one says what they do. Words in **bold** on first use are defined in [`GLOSSARY.md`](../../GLOSSARY.md).
 
-Every rule here was tried in the mockup (`src/prototype/main-screen-fable/`, variant B3) and agreed with the project owner in November 2026. The last section lists what the mockup fakes.
+Every rule here was tried in throwaway mockups and agreed with the project owner in November 2026. The screenshots come from those mockups. The last section lists what the app still approximates.
 
 ## The screens
 
@@ -170,18 +170,17 @@ Shown once. The name, three lines saying what Jauge does, two buttons ("Autour d
 - Pull to refresh.
 - What the chart shows before a week of history exists ("depuis le …").
 
-## What the mockup fakes
+## What the app still approximates
 
-Anyone building from the mockup should know these are stand-ins:
+The app started from the mockups and is replacing their stand-ins one by one. Still to do:
 
-| In the mockup | In the real app |
+| Today | Meant to be |
 |---|---|
-| Price history is invented | Collected by our own job from the day it starts |
-| A station belongs to the nearest place label on screen | Official neighbourhood, town and region boundaries |
+| A station belongs to the nearest place name shown on the map | Official neighbourhood, town and region boundaries |
 | Place search only knows towns that have a station | A real place search (addresses, towns, postal codes) |
-| "Ma position" falls back to a demo spot in Longueuil when the browser refuses | The place search opens instead |
 | Brand badges are coloured placeholders | Real logos for the ten largest banners |
-| Route app, language and theme in settings do nothing | They work |
+| Route app, language and theme in settings do nothing; the theme follows the device | They work |
 | "Y aller" opens Google Maps directly | Asks once which app |
-| One station in the snapshot has no usable position (0, 0) and is skipped | The data job detects and repairs or drops such stations |
-| Wide layout is behind a toggle | Chosen automatically from the window width |
+| If our data cannot be reached, the app shows the snapshot shipped with the site | Falls back to the Régie's own feed when our data is more than an hour old |
+
+Already replaced: prices come from our collector, the price chart draws recorded changes, nothing is ranked from an invented position, and the wide layout switches on by itself.

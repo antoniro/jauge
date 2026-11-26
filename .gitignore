@@ -24,5 +24,8 @@ dist-ssr
 *.sw?
 .preview-pid
 
-# working screenshots from the mockup rounds (the curated ones are in docs/design/img)
-src/prototype/**/screens/
+
+# design mockups: throwaway code, kept on the machine that made them, not in the repository
+src/prototype/
+src/fable-main.tsx
+fable.html

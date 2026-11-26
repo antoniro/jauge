@@ -18,8 +18,7 @@ Prices come from the [Régie de l'énergie](https://regieessencequebec.ca), to w
 
 - the design documentation;
 - the job that fetches the Régie's prices every few minutes and records each change (its output is on the [`data` branch](../../tree/data));
-- the app, in progress: the main screen already runs on the live prices and the recorded history, borrowing its pieces from the mockups while each screen is rebuilt;
-- the mockups the design came from.
+- the app, in progress: the main screen already runs on the live prices and the recorded history.
 
 ## Documentation
 
@@ -38,13 +37,7 @@ You need Node 22 or newer.
 
 ```sh
 npm install
-npm run dev
-```
-
-- `http://localhost:5173/` is the app.
-- `http://localhost:5173/fable.html` is the mockups. The bar at the bottom switches between variants, light and dark, phone and wide screen. Variant **B3** is the chosen design; the others are earlier directions kept for reference. The mockup code in `src/prototype/` is throwaway.
-
-```sh
+npm run dev     # the app, at http://localhost:5173/
 npm test        # the ranking rules, the history reader and the price collector
 npm run build   # type-check and build
 ```

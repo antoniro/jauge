@@ -1,6 +1,9 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vitest/config'
+import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
+
+const mockups = resolve(import.meta.dirname, 'fable.html')
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -11,7 +14,8 @@ export default defineConfig({
   preview: { allowedHosts: ['.ts.net'] },
   build: {
     rollupOptions: {
-      input: { main: resolve(import.meta.dirname, 'index.html'), fable: resolve(import.meta.dirname, 'fable.html') },
+      // the design mockups are not kept in the repository; when they are on disk, they are built next to the app
+      input: { main: resolve(import.meta.dirname, 'index.html'), ...(existsSync(mockups) ? { fable: mockups } : {}) },
     },
   },
 })
