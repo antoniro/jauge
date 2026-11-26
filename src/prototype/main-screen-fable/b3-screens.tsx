@@ -142,23 +142,40 @@ function fakeChanges(id: string, price: number, now: number): { first: number; l
  *  flat while the price holds, a soft ramp at each change, the area fading out underneath, a bold dot for "now".
  *  Every change shows, several in one day included, and the curve never rises above or dips below a real price.
  *  Slide a finger (or the mouse) along it to read the exact price at any moment. */
-function PriceHistory({ id, price }: { id: string; price: number }) {
+function PriceHistory({ id, price, load }: { id: string; price: number; load?: (from: number, to: number) => Promise<{ t: number; p: number | null }[]> }) {
   const [days, setDays] = useState(7)
   const [at, setAt] = useState<number | null>(null)
   const now = useMemo(() => Date.now(), [])
-  const all = useMemo(() => fakeChanges(id, price, now), [id, price, now])
+  // the real app loads what the collector recorded; the mockup invents a month ending on today's price
+  const [real, setReal] = useState<Change[] | null>(null)
+  useEffect(() => {
+    if (!load) return
+    let alive = true
+    setReal(null)
+    load(startOfDay(now) - 31 * DAY, now).then((c) => { if (alive) setReal(c.filter((x): x is Change => x.p != null)) })
+    return () => { alive = false }
+  }, [load, now])
+  const list = useMemo<Change[]>(() => {
+    if (load) return real ?? []
+    const fake = fakeChanges(id, price, now)
+    return [{ t: 0, p: fake.first }, ...fake.list]
+  }, [load, real, id, price, now])
   const t0 = startOfDay(now) - (days - 1) * DAY, t1 = startOfDay(now) + DAY
-  const priceAt = (t: number) => { let p = all.first; for (const c of all.list) { if (c.t <= t) p = c.p; else break } return p }
-  const inside = all.list.filter((c) => c.t > t0)
-  const startP = priceAt(t0)
-  const values = [startP, ...inside.map((c) => c.p)]
+  const priceAt = (t: number) => { let p: number | null = null; for (const c of list) { if (c.t <= t) p = c.p; else break } return p }
+  const within = list.filter((c) => c.t > t0 && c.t <= now)
+  // a history younger than the period starts where we first know a price, not at the left edge
+  const known = priceAt(t0) != null ? t0 : within[0]?.t ?? null
+  const firstP = priceAt(t0) ?? within[0]?.p ?? price
+  const inside = priceAt(t0) != null ? within : within.slice(1)
+  const from = known ?? now
+  const values = [firstP, ...inside.map((c) => c.p)]
   const lo = Math.min(...values), hi = Math.max(...values), pad = Math.max((hi - lo) * 0.18, 0.6)
   const X0 = 3, PW = 258, Y0 = 10, PH = 80, YB = Y0 + PH
   const x = (t: number) => X0 + ((t - t0) / (t1 - t0)) * PW
   const y = (p: number) => Y0 + (1 - (p - (lo - pad)) / (hi - lo + 2 * pad)) * PH
   const ramp = days > 7 ? 3.2 : 7 // half the width of a change's ramp, in chart units
-  let d = `M${x(t0).toFixed(1)} ${y(startP).toFixed(1)}`
-  let px = x(t0), py = y(startP)
+  let d = `M${x(from).toFixed(1)} ${y(firstP).toFixed(1)}`
+  let px = x(from), py = y(firstP)
   inside.forEach((c, i) => {
     const cx = x(c.t), nx = i + 1 < inside.length ? x(inside[i + 1].t) : x(now), cy = y(c.p)
     const w = Math.max(0.5, Math.min(ramp, (cx - px) / 2, (nx - cx) / 2)) // ramps never run into each other
@@ -169,20 +186,20 @@ function PriceHistory({ id, price }: { id: string; price: number }) {
   const gid = useId()
   const cols = Array.from({ length: days }, (_, i) => t0 + i * DAY)
   const wd = new Intl.DateTimeFormat('fr-CA', { weekday: 'short' }), dm = new Intl.DateTimeFormat('fr-CA', { day: 'numeric', month: 'short' })
-  const last = all.list[all.list.length - 1]
-  const since = last ? now - last.t : 30 * DAY
-  const quiet = since < 36e5 ? `changé il y a ${Math.max(1, Math.round(since / 6e4))} min` : since < DAY ? `changé il y a ${Math.round(since / 36e5)} h` : `inchangé depuis ${Math.floor(since / DAY)} ${Math.floor(since / DAY) > 1 ? 'jours' : 'jour'}`
+  const last = list[list.length - 1]
+  const since = last && last.t > 0 ? now - last.t : 30 * DAY
+  const quiet = known == null ? '' : known > t0 ? `depuis le ${dm.format(known)}` : since < 36e5 ? `changé il y a ${Math.max(1, Math.round(since / 6e4))} min` : since < DAY ? `changé il y a ${Math.round(since / 36e5)} h` : `inchangé depuis ${Math.floor(since / DAY)} ${Math.floor(since / DAY) > 1 ? 'jours' : 'jour'}`
   const when = at == null ? '' : new Intl.DateTimeFormat('fr-CA', days > 7 ? { day: 'numeric', month: 'short', hour: 'numeric' } : { weekday: 'short', hour: 'numeric' }).format(at)
   const scrub = (e: React.PointerEvent<SVGSVGElement>) => {
     const box = e.currentTarget.getBoundingClientRect()
     const t = t0 + (((e.clientX - box.left) / box.width) * 300 - X0) / PW * (t1 - t0)
-    setAt(clamp(t, t0, now))
+    if (known != null) setAt(clamp(t, known, now))
   }
   return (
     <section className="x-hist" aria-label="Historique du prix">
       <div className="x-hist-head">
         <Seg label="Période" value={days} onChange={setDays} options={[{ v: 7, t: '7 jours' }, { v: 30, t: '30 jours' }]} />
-        <p aria-live="off">{at == null ? quiet : <><b>{fmtPrice(priceAt(at))}</b>{' '}{when}</>}</p>
+        <p aria-live="off">{at == null ? quiet : <><b>{fmtPrice(priceAt(at) ?? price)}</b>{' '}{when}</>}</p>
       </div>
       <svg className="x-line" viewBox="0 0 300 118" role="img" onPointerDown={scrub} onPointerMove={scrub} onPointerLeave={() => setAt(null)} onPointerUp={(e) => { if (e.pointerType !== 'mouse') setAt(null) }}
         aria-label={`Prix des ${days} derniers jours : de ${fmtPrice(lo)} à ${fmtPrice(hi)} cents le litre, ${inside.length} ${inside.length > 1 ? 'changements' : 'changement'}`}>
@@ -195,14 +212,14 @@ function PriceHistory({ id, price }: { id: string; price: number }) {
           <linearGradient id={`${gid}a`} x1="0" y1={Y0} x2="0" y2={YB} gradientUnits="userSpaceOnUse">
             <stop offset="0" stopColor="var(--ink)" stopOpacity=".2" /><stop offset="1" stopColor="var(--ink)" stopOpacity="0" />
           </linearGradient>
-          <linearGradient id={`${gid}l`} x1={X0} y1="0" x2={x(now)} y2="0" gradientUnits="userSpaceOnUse">
+          <linearGradient id={`${gid}l`} x1={x(from)} y1="0" x2={Math.max(x(now), x(from) + 1)} y2="0" gradientUnits="userSpaceOnUse">
             <stop offset="0" stopColor="var(--ink)" stopOpacity=".3" /><stop offset=".7" stopColor="var(--ink)" stopOpacity="1" />
           </linearGradient>
         </defs>
-        <path className="area" d={`${d}V${YB}H${x(t0).toFixed(1)}Z`} fill={`url(#${gid}a)`} />
-        <path key={days} className="step" d={d} pathLength={1} stroke={`url(#${gid}l)`} />
+        {known != null && <path className="area" d={`${d}V${YB}H${x(from).toFixed(1)}Z`} fill={`url(#${gid}a)`} />}
+        {known != null && <path key={`${days}${from}`} className="step" d={d} pathLength={1} stroke={`url(#${gid}l)`} />}
         {at != null && <path className="cursor" d={`M${x(at).toFixed(1)} ${Y0 - 4}V${YB}`} />}
-        <circle className="now" cx={x(at ?? now)} cy={y(priceAt(at ?? now))} r="5.500" />
+        <circle className="now" cx={x(at ?? now)} cy={y(priceAt(at ?? now) ?? price)} r="5.500" />
         {days === 7
           ? cols.map((t, i) => <text key={t} x={x(t + DAY / 2)} y="112" textAnchor="middle" className={i === 6 ? 'today' : undefined}>{i === 6 ? 'auj.' : wd.format(t).replace('.', '')}</text>)
           : cols.map((t, i) => i % 7 === 0 && i < 28 ? <text key={t} x={x(t) + 2} y="112">{dm.format(t)}</text> : i === 29 ? <text key={t} x={X0 + PW} y="112" textAnchor="end" className="today">auj.</text> : null)}
@@ -212,7 +229,12 @@ function PriceHistory({ id, price }: { id: string; price: number }) {
 }
 
 /** What a station's card unfolds to show: why the savings are what they are, its other fuels, the last week, and the reference switch. */
-export function StationMore({ j, r, base, ownRef, onMakeRef, onDropRef, onReport }: { j: Jauge; r: Ranked; base: Ranked | null; ownRef: boolean; onMakeRef: () => void; onDropRef: () => void; onReport: () => void }) {
+/** Loads a station's recorded price changes for one fuel over a period. The mockup has none and invents them. */
+export type HistoryLoader = (id: string, fuel: Fuel, from: number, to: number) => Promise<{ t: number; p: number | null }[]>
+
+export function StationMore({ j, r, base, ownRef, onMakeRef, onDropRef, onReport, history }: { j: Jauge; r: Ranked; base: Ranked | null; ownRef: boolean; onMakeRef: () => void; onDropRef: () => void; onReport: () => void; history?: HistoryLoader }) {
+  const id = r.s.id, fuel = j.fuel
+  const load = useMemo(() => (history ? (from: number, to: number) => history(id, fuel, from, to) : undefined), [history, id, fuel])
   const others = FUELS.filter((f: Fuel) => f !== j.fuel)
   return (
     <>
@@ -227,7 +249,7 @@ export function StationMore({ j, r, base, ownRef, onMakeRef, onDropRef, onReport
           <p key={f}><span>{FUEL_LABEL[f]}</span><b>{r.s.p[f] == null ? '—' : fmtPrice(r.s.p[f]!)}</b></p>
         ))}
       </div>
-      <PriceHistory id={r.s.id + j.fuel} price={r.price} />
+      <PriceHistory id={r.s.id + j.fuel} price={r.price} load={load} />
       <div className="x-foot">
         <button className="x-ref" aria-pressed={r.isBaseline} disabled={r.isBaseline && !ownRef} onClick={(e) => { e.stopPropagation(); if (r.isBaseline) onDropRef(); else onMakeRef() }}>
           {r.isBaseline ? <IconCheck /> : <IconPinMark />}Ma référence
@@ -259,7 +281,7 @@ export function ReportPrice({ j, r }: { j: Jauge; r: Ranked }) {
 // ---------- settings ----------
 /** Each drawing stands for a range of consumption; tapping it sets a typical value inside that range. */
 const CARS = [{ v: 6.5, max: 7, t: <CarSmall />, name: 'Petite voiture' }, { v: 8, max: 9.5, t: <CarMid />, name: 'Voiture moyenne' }, { v: 11, max: Infinity, t: <CarBig />, name: 'VUS ou camion' }]
-export function Settings({ j, onReplay }: { j: Jauge; onReplay: () => void }) {
+export function Settings({ j, onReplay }: { j: Jauge; onReplay?: () => void }) {
   const [nav, setNav] = useState('google'), [lang, setLang] = useState('fr'), [theme, setTheme] = useState('auto')
   const cons = j.consL100
   const step = (d: number) => j.setConsL100(clamp(Math.round((cons + d) * 2) / 2, 3, 20))
@@ -297,7 +319,7 @@ export function Settings({ j, onReplay }: { j: Jauge; onReplay: () => void }) {
         <div><h3>Thème</h3><Seg label="Thème" value={theme} onChange={setTheme} options={[{ v: 'auto', t: 'Auto' }, { v: 'light', t: 'Clair' }, { v: 'dark', t: 'Sombre' }]} /></div>
       </section>
 
-      <button className="x-replay" onClick={onReplay}>Revoir l’écran d’accueil</button>
+      {onReplay && <button className="x-replay" onClick={onReplay}>Revoir l’écran d’accueil</button>}
     </div>
   )
 }
