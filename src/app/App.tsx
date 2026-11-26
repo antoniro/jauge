@@ -3,10 +3,8 @@ import '@fontsource-variable/big-shoulders'
 import '@fontsource-variable/instrument-sans'
 import { MotionConfig } from 'motion/react'
 import { Suspense, lazy, useEffect, useRef, useState } from 'react'
-import '../prototype/main-screen-fable/base.css'
-import './app.css'
-import { useJauge } from '../prototype/main-screen-fable/shared'
-import { loadStations } from './data/source'
+import './styles/base.css'
+import { useJauge } from './state'
 
 // the map library is most of the weight: load it after the page itself is on screen
 const MainScreen = lazy(() => import('./MainScreen'))
@@ -15,7 +13,7 @@ const MainScreen = lazy(() => import('./MainScreen'))
 const WIDE = 900
 
 export default function App() {
-  const j = useJauge({ load: loadStations, keep: 'jauge' })
+  const j = useJauge({ keep: 'jauge' })
   const box = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState({ w: window.innerWidth, h: window.innerHeight })
   const [dark, setDark] = useState(() => matchMedia('(prefers-color-scheme: dark)').matches)
@@ -41,7 +39,7 @@ export default function App() {
   const wide = size.w >= WIDE
   return (
     <MotionConfig reducedMotion="user">
-      <div ref={box} className="fb-phone app">
+      <div ref={box} className="fb-phone">
         <Suspense fallback={null}>
           <MainScreen key={wide ? 'wide' : 'phone'} j={j} dark={dark} accent="cone" h={size.h} wide={wide} />
         </Suspense>

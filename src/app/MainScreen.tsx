@@ -1,19 +1,18 @@
 // The main screen of the app: the map, the best stations as cards, the full list, and the sheets around them.
-// It started as the chosen mockup (src/prototype/main-screen-fable/VariantB3.tsx) and still borrows its pieces and
-// styles from that folder; they move here as each screen is rebuilt. Rules: docs/design/behaviour.md.
+// Rules: docs/design/behaviour.md. Look: DESIGN.md.
 import { AnimatePresence, animate, motion, useDragControls, useMotionValue, useReducedMotion, useTransform } from 'motion/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Origin, Ranked, Station } from './domain/ranking'
 import { around, betterOption, rank } from './domain/ranking'
 import { loadHistory } from './data/source'
-import '../prototype/main-screen-fable/b.css'
-import '../prototype/main-screen-fable/b2.css'
-import '../prototype/main-screen-fable/b3.css'
-import FableMap from '../prototype/main-screen-fable/FableMap'
-import type { Jauge, Place } from '../prototype/main-screen-fable/shared'
-import { BrandBadge, FuelSwitch, GeoToast, IconGo, IconLocate, Odometer, Wordmark, clamp, fmtKm, fmtMoney, fmtPrice, goUrl, cityName, placeIndex, signedMoney, stationName, stationWhere } from '../prototype/main-screen-fable/shared'
-import { IconBack, IconDown, IconGear, IconPinMark, IconSearch, PlacePicker, ReportPrice, Settings, Sheet, StationMore, Welcome } from '../prototype/main-screen-fable/b3-screens'
-import { paintRelief } from '../prototype/main-screen-fable/topo'
+import './styles/main.css'
+import StationMap from './ui/StationMap'
+import type { Place } from './domain/format'
+import type { Jauge } from './state'
+import { cityName, clamp, fmtKm, fmtMoney, fmtPrice, goUrl, placeIndex, signedMoney, stationName, stationWhere } from './domain/format'
+import { BrandBadge, FuelSwitch, GeoToast, IconGo, IconLocate, Odometer, Wordmark } from './ui/pieces'
+import { IconBack, IconDown, IconGear, IconPinMark, IconSearch, PlacePicker, ReportPrice, Settings, Sheet, StationMore, Welcome } from './ui/sheets'
+import { paintRelief } from './ui/relief'
 
 const CARD_W = 326, GAP = 10, PITCH = CARD_W + GAP
 const PEEK = 80 // closed handle strip
@@ -357,7 +356,7 @@ export default function MainScreen({ j, dark, accent, h, wide }: { j: Jauge; dar
   if (wide) {
     return (
       <div className="b-root b2-root b3-root x-wide">
-        <FableMap stations={j.stations} pills={pills} fuel={j.fuel} origin={j.origin} dark={dark} accent={accent}
+        <StationMap stations={j.stations} pills={pills} fuel={j.fuel} origin={j.origin} dark={dark} accent={accent}
           bestId={nowhere ? undefined : overview ? areaPills[0]?.s.id : bestId} refId={blank ? undefined : refId} selected={selected} onSelect={pick} padBottom={blank || unfolded ? 40 : 250} padTop={90}
           padLeft={sheet || reported ? 900 : unfolded ? 444 + 360 + 48 : 484} allPrices onAway={blank ? undefined : onAway} showMe={positioned && !area} frame={frame} />
         <GeoToast j={j} />
@@ -381,7 +380,7 @@ export default function MainScreen({ j, dark, accent, h, wide }: { j: Jauge; dar
 
   return (
     <div className="b-root b2-root b3-root">
-      <FableMap stations={j.stations} pills={pills} fuel={j.fuel} origin={j.origin} dark={dark} accent={accent}
+      <StationMap stations={j.stations} pills={pills} fuel={j.fuel} origin={j.origin} dark={dark} accent={accent}
         bestId={nowhere ? undefined : overview ? areaPills[0]?.s.id : bestId} refId={blank ? undefined : refId} selected={selected} onSelect={pick} padBottom={nowhere ? 0 : overview ? PEEK : PEEK + 238} padTop={128}
         allPrices onAway={blank ? undefined : onAway} showMe={positioned && !area} frame={frame} />
       <motion.div className="b-scrim" style={{ opacity: scrim }} aria-hidden />
