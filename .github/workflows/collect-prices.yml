@@ -1,0 +1,49 @@
+# Fetches the Régie de l'énergie's feed every few minutes and saves the prices and their changes on the `data` branch.
+# What it writes and why: docs/data.md
+name: Collect prices
+
+on:
+  schedule:
+    - cron: '*/5 * * * *' # GitHub may run this late or skip a run when it is busy; the history then has a small gap
+  workflow_dispatch:
+
+permissions:
+  contents: write # to push to the data branch
+
+concurrency:
+  group: collect-prices # never two at once: each run builds on the previous one's files
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Get the collector
+        uses: actions/checkout@v7
+        with:
+          path: code
+          sparse-checkout: scripts/collect
+
+      - name: Get the data saved so far
+        uses: actions/checkout@v7
+        with:
+          ref: data
+          path: data
+
+      - name: Collect
+        run: node code/scripts/collect/run.mjs data
+
+      - name: Save
+        working-directory: data
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nothing to save."
+            exit 0
+          fi
+          at=$(node -p "require('./meta.json').generatedAt")
+          changes=$(node -p "require('./meta.json').changes")
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit --quiet --message "Prices of $at ($changes changes)"
+          git push

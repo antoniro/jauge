@@ -54,7 +54,7 @@ Constraints:
 
 Open:
 
-- How long to keep detailed price history, and in what file layout.
+- How long to keep detailed price history (every change is kept for now; see `docs/data.md`).
 - Which service provides place search and official boundaries for area prices.
 - Whether distances should come from a routing service.
 

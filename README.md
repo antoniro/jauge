@@ -14,13 +14,13 @@ Prices come from the [Régie de l'énergie](https://regieessencequebec.ca), to w
 
 ## Status
 
-**Design is done; the app is not built yet.** This repository currently holds:
+**Design is done and prices are being collected; the app is not built yet.** This repository currently holds:
 
 - the design documentation;
 - working mockups of every screen, with real station data and invented price history;
-- a snapshot of the Régie's feed used by the mockups.
+- the job that fetches the Régie's prices every few minutes and records each change (its output is on the [`data` branch](../../tree/data)).
 
-Next: a scheduled job that collects prices and their history, then the app itself.
+Next: the app itself.
 
 ## Documentation
 
@@ -29,6 +29,7 @@ Next: a scheduled job that collects prices and their history, then the app itsel
 | [`PRODUCT.md`](PRODUCT.md) | What Jauge is, who it is for, what is decided and what is open |
 | [`DESIGN.md`](DESIGN.md) | How it looks: colours, type, shapes, components, rules |
 | [`docs/design/behaviour.md`](docs/design/behaviour.md) | How it behaves: savings, reference station, map, cards, settings |
+| [`docs/data.md`](docs/data.md) | Where the prices come from, what the collecting job saves, and the file formats |
 | [`GLOSSARY.md`](GLOSSARY.md) | The words used in the code, the interface and the docs |
 | [`docs/adr/`](docs/adr) | Decisions that are hard to undo, and why they were made |
 
