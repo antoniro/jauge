@@ -307,7 +307,7 @@ Brand badges are round. Until real logos are added, each banner has a placeholde
 ### Chips and switches
 
 - **Place chip** (`chip`): pin or target icon, the place name, a small down arrow. Opens the place search.
-- **Fuel switch**: three words in a Papier pill; the selected one sits on an Enseigne thumb that slides between them. Régulier and Super carry their octane number (87, 91) small underneath, in Big Shoulders.
+- **Fuel switch**: three words in a Papier pill; the selected one sits on an Enseigne thumb that slides between them.
 - **Litres stepper**: minus, a pump icon with the number and "L", plus. The number rolls.
 - **Segmented control**: Papier 2 track, selected option on Enseigne. Used in settings and on the chart.
 - **Car size**: three line drawings of a small car, a car and a truck. Each stands for a range of consumption; the highlighted one follows the number.

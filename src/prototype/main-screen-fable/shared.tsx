@@ -5,8 +5,6 @@ import type { Fuel, Origin, Ranked, Ranking, Snapshot, Station } from '../main-s
 import { FUEL_LABEL, LONGUEUIL, fmtKm, fmtMoney, fmtPrice, loadSnapshot, rank, shortAddress } from '../main-screen/data'
 
 export const FUELS: Fuel[] = ['R', 'S', 'D']
-/** The octane number people look for on the pump. Régulier is the standard 87; the Régie defines its "super" as 91 (Guide méthodologique, partie 1). */
-export const OCTANE: Partial<Record<Fuel, string>> = { R: '87', S: '91' }
 export const CONS_L100 = 8
 const FILLS = [30, 50, 70]
 
@@ -178,7 +176,7 @@ export function FuelSwitch({ j, id, className = '' }: { j: Jauge; id: string; cl
       {FUELS.map((f) => (
         <button key={f} role="radio" aria-checked={j.fuel === f} className="fb-fuel-opt" onClick={() => j.setFuel(f)}>
           {j.fuel === f && <motion.span layoutId={`fuel-${id}`} className="fb-fuel-thumb" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
-          <span>{FUEL_LABEL[f]}{OCTANE[f] && <small>{OCTANE[f]}</small>}</span>
+          <span>{FUEL_LABEL[f]}</span>
         </button>
       ))}
     </div>

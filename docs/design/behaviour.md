@@ -115,7 +115,7 @@ Unfolded, a card adds:
 ## Top controls
 
 - **Place chip**: where the person is looking. Opens the place search ("Ma position", then places).
-- **Fuel**: Régulier, Super, Diesel. One at a time. These are the three grades the Régie publishes. The octane number people look for on the pump sits small under the word: 87 under Régulier, 91 under Super (the Régie defines its "super" as 91). Mid-grade 89 and 94 are not published, so they cannot be shown.
+- **Fuel**: Régulier, Super, Diesel. One at a time. These are the three grades the Régie publishes, under these names (its "super" is 91 octane; mid-grade 89 and 94 are not published). The switch shows the words only: octane numbers under them were tried and made it cramped and uneven beside Diesel.
 - **Litres**: 10 to 120, in steps of 5. It is one setting for the whole app, so it lives at the top, never on a card.
 - **Settings**.
 
