@@ -1,0 +1,13 @@
+{
+  "generatedAt": "2026-11-26T20:25:00Z",
+  "since": "2026-11-26T20:25:00Z",
+  "stations": 2476,
+  "changes": 6925,
+  "skipped": [
+    {
+      "name": "Hub Régie",
+      "address": "500 Boul. René-Lévesque Ouest, Montréal",
+      "reason": "no usable position"
+    }
+  ]
+}
