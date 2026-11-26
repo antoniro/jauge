@@ -39,6 +39,7 @@ You need Node 22 or newer.
 npm install
 npm run dev     # the app, at http://localhost:5173/
 npm test        # the ranking rules, the history reader and the price collector
+npm run e2e     # the main flows in a real browser, on fixed data (uses the Chrome installed on your machine)
 npm run build   # type-check and build
 ```
 

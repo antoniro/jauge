@@ -1,0 +1,33 @@
+# Checks every change to the code: types, the tests, the build, and the main flows in a real browser.
+name: Checks
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['**.md', 'docs/**']
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      # The reference pictures depend on the machine's fonts and are not in the repository, so here only the behaviour is checked.
+      - run: npx playwright test --ignore-snapshots
+        env:
+          CI: 'true'

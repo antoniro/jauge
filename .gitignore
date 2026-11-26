@@ -29,3 +29,9 @@ dist-ssr
 src/prototype/
 src/fable-main.tsx
 fable.html
+
+# browser tests: the build they run on, their reports, and the reference pictures (they depend on the machine's fonts)
+dist-e2e
+test-results
+playwright-report
+e2e/__shots__

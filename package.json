@@ -11,7 +11,9 @@
     "proto": "vite --open \"/?variant=A\"",
     "snapshot": "node scripts/make-snapshot.mjs",
     "test": "node --test \"scripts/**/*.test.mjs\" && vitest run",
-    "collect": "node scripts/collect/run.mjs"
+    "collect": "node scripts/collect/run.mjs",
+    "e2e": "playwright test",
+    "e2e:accept": "playwright test --update-snapshots"
   },
   "dependencies": {
     "@fontsource-variable/big-shoulders": "^5.3.0",
@@ -22,6 +24,7 @@
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
