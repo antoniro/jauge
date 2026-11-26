@@ -156,7 +156,7 @@ export default function FableMap({ stations, pills, fuel, origin, dark, accent, 
     if (el.current.dataset.band !== band) {
       el.current.dataset.band = band
       // in the area band the bubbles carry the place names, so the map's own copies step back (they stay placed, only see-through)
-      for (const l of placeLayers.current) { try { map.setPaintProperty(l.id, 'text-opacity', band === 'area' ? 0 : (l.opacity ?? 1)) } catch { /* layer gone */ } }
+      for (const l of placeLayers.current) { try { map.setPaintProperty(l.id, 'text-opacity', band === 'area' ? 0 : ((l.opacity ?? 1) as number)) } catch { /* layer gone */ } }
       declutter()
     }
   }
