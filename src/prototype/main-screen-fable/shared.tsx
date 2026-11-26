@@ -27,17 +27,34 @@ export interface Jauge {
 
 export interface VariantProps { j: Jauge; dark: boolean; accent: string; h: number; wide?: boolean }
 
-export function useJauge(): Jauge {
+/** A setting that survives a reload when `key` is given (the real app), and is plain state otherwise (the mockups). */
+function useKept<T>(key: string | undefined, initial: T): [T, (v: T) => void] {
+  const [value, set] = useState<T>(() => {
+    if (!key) return initial
+    try { const raw = localStorage.getItem(key); return raw == null ? initial : (JSON.parse(raw) as T) } catch { return initial }
+  })
+  const keep = useCallback((v: T) => { set(v); if (key) { try { localStorage.setItem(key, JSON.stringify(v)) } catch { /* private mode */ } } }, [key])
+  return [value, keep]
+}
+
+export interface JaugeOptions {
+  /** where the stations come from; the mockups read the snapshot shipped with the site */
+  load?: () => Promise<Snapshot>
+  /** prefix under which fuel, litres, consumption and radius are remembered; none = not remembered */
+  keep?: string
+}
+
+export function useJauge({ load = loadSnapshot, keep }: JaugeOptions = {}): Jauge {
   const [snap, setSnap] = useState<Snapshot | null>(null)
-  const [fuel, setFuel] = useState<Fuel>('R')
+  const [fuel, setFuel] = useKept<Fuel>(keep && `${keep}.fuel`, 'R')
   const [origin, setOrigin] = useState<Origin>(LONGUEUIL)
   const [locating, setLocating] = useState(false)
   const [geoError, setGeoError] = useState<string | null>(null)
-  const [fillL, setFillL] = useState(50)
-  const [consL100, setConsL100] = useState(CONS_L100)
-  const [radiusKm, setRadiusKm] = useState<number | null>(null)
+  const [fillL, setFillL] = useKept(keep && `${keep}.litres`, 50)
+  const [consL100, setConsL100] = useKept(keep && `${keep}.consumption`, CONS_L100)
+  const [radiusKm, setRadiusKm] = useKept<number | null>(keep && `${keep}.radius`, null)
 
-  useEffect(() => { loadSnapshot().then(setSnap).catch(() => setSnap({ generatedAt: '', stations: [] })) }, [])
+  useEffect(() => { load().then(setSnap).catch(() => setSnap({ generatedAt: '', stations: [] })) }, [load])
 
   const stations = useMemo(() => snap?.stations ?? [], [snap])
   const rankings = useMemo(() => {
@@ -66,7 +83,7 @@ export function useJauge(): Jauge {
   return {
     ready: snap != null, stations, fuel, setFuel, origin, located: origin !== LONGUEUIL, locating, locate, geoError, setOrigin,
     consL100, setConsL100, radiusKm, setRadiusKm,
-    fillL, setFillL, cycleFill: () => setFillL((v) => FILLS[(FILLS.indexOf(v) + 1) % FILLS.length]),
+    fillL, setFillL, cycleFill: () => setFillL(FILLS[(FILLS.indexOf(fillL) + 1) % FILLS.length]),
     ranking, best: ranking.list[0] ?? null, bestPrice,
   }
 }

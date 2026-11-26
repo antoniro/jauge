@@ -1,34 +1,16 @@
-// PROTOTYPE — throwaway. Real-savings ranking as defined in GLOSSARY.md.
-export type Fuel = 'R' | 'S' | 'D'
-export interface Station {
-  id: string; n: string; b: string | null; a: string; r: string
-  lat: number; lon: number; p: Partial<Record<Fuel, number>>
-}
-export interface Snapshot { generatedAt: string; stations: Station[] }
-export interface Origin { lat: number; lon: number; label: string }
-export interface Ranked {
-  s: Station; price: number; km: number; extraKm: number
-  detourCost: number; priceSaving: number; real: number; isBaseline: boolean
-}
-export interface Ranking { list: Ranked[]; baseline: Ranked | null; radiusKm: number }
+// PROTOTYPE — throwaway helpers for the mockups.
+// The ranking itself now lives with the app (src/app/domain/ranking.ts); the mockups use the same code.
+import type { Fuel, Origin, RankInput, Ranked, Snapshot, Station } from '../../app/domain/ranking'
+import { roadKm } from '../../app/domain/ranking'
+export type { Fuel, Origin, RankInput, Ranked, Ranking, Snapshot, Station } from '../../app/domain/ranking'
+export { rank, roadKm } from '../../app/domain/ranking'
 
 export const LONGUEUIL: Origin = { lat: 45.5312, lon: -73.5181, label: 'Longueuil' }
-const ROAD_FACTOR = 1.3
 
 export async function loadSnapshot(): Promise<Snapshot> {
   const res = await fetch(`${import.meta.env.BASE_URL}data/stations.json`)
   return res.json()
 }
-
-export function roadKm(a: { lat: number; lon: number }, b: { lat: number; lon: number }) {
-  const R = 6371, toRad = Math.PI / 180
-  const dLat = (b.lat - a.lat) * toRad, dLon = (b.lon - a.lon) * toRad
-  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * toRad) * Math.cos(b.lat * toRad) * Math.sin(dLon / 2) ** 2
-  return 2 * R * Math.asin(Math.sqrt(h)) * ROAD_FACTOR
-}
-
-/** refId: the station the person chose to compare against. Without it (or if it lacks the fuel), the closest station is the reference. */
-export interface RankInput { stations: Station[]; origin: Origin; fuel: Fuel; fillL: number; consL100: number; radiusKm?: number; refId?: string | null }
 
 function evaluate(s: Station, km: number, base: { price: number; km: number }, inp: RankInput): Ranked {
   const price = s.p[inp.fuel]!
@@ -38,26 +20,7 @@ function evaluate(s: Station, km: number, base: { price: number; km: number }, i
   return { s, price, km, extraKm, detourCost, priceSaving, real: priceSaving - detourCost, isBaseline: false }
 }
 
-export function rank(inp: RankInput): Ranking {
-  const withFuel = inp.stations
-    .filter((s) => s.p[inp.fuel] != null)
-    .map((s) => ({ s, km: roadKm(inp.origin, s) }))
-    .sort((x, y) => x.km - y.km)
-  if (!withFuel.length) return { list: [], baseline: null, radiusKm: inp.radiusKm ?? 10 }
-  const ref = (inp.refId && withFuel.find((x) => x.s.id === inp.refId)) || withFuel[0]
-  const base = { price: ref.s.p[inp.fuel]!, km: ref.km }
-  let radiusKm = inp.radiusKm ?? 10
-  let inside = withFuel.filter((x) => x.km <= radiusKm)
-  if (inside.length < 5 && inp.radiusKm == null) { radiusKm = 25; inside = withFuel.filter((x) => x.km <= radiusKm) }
-  if (!inside.includes(ref)) inside = [...inside, ref] // a chosen reference stays in the list even outside the radius
-  const list = inside.map((x) => evaluate(x.s, x.km, base, inp))
-  const baseline = list.find((r) => r.s.id === ref.s.id)!
-  baseline.isBaseline = true
-  list.sort((x, y) => y.real - x.real || x.km - y.km)
-  return { list, baseline, radiusKm }
-}
-
-/** Better option for a Selected station: closer to the person, or within 3 km of the pick, saving ≥ $0.50 more. */
+/** Only the two earliest map mockups (B and B2) still use this first version of the rule. */
 export function betterOption(selected: Station, inp: RankInput): { sel: Ranked; better: Ranked | null } | null {
   const withFuel = inp.stations.filter((s) => s.p[inp.fuel] != null).map((s) => ({ s, km: roadKm(inp.origin, s) })).sort((a, b) => a.km - b.km)
   if (!withFuel.length || selected.p[inp.fuel] == null) return null
