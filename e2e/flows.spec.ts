@@ -173,3 +173,58 @@ test.describe('settings', () => {
     await expect(settings.getByRole('radio', { name: 'VUS ou camion' })).toBeChecked()
   })
 })
+
+// Pictures of the screens the flows above do not stop on, so that a change of styles cannot slip through unseen.
+test.describe('how it looks', () => {
+  test('the place search', async ({ page }) => {
+    await openAtBrossard(page)
+    await page.getByRole('button', { name: /Changer d’endroit/ }).click()
+    await expect(page.getByRole('dialog', { name: 'Choisir un endroit' }).getByRole('button', { name: 'Ma position' })).toBeVisible()
+    await expect(page).toHaveScreenshot('place-search.png')
+  })
+
+  test('the ranked list', async ({ page }, info) => {
+    await openWithPosition(page)
+    await expect(frontCard(page)).toContainText('Le meilleur plein')
+    await openList(page, info.project.name === 'wide')
+    await expect(page.getByRole('button', { name: /^1\. / })).toBeVisible()
+    await expect(page).toHaveScreenshot('ranked-list.png')
+  })
+
+  test('the report sheet', async ({ page }) => {
+    await openWithPosition(page)
+    await frontCard(page).getByRole('button', { name: /Voir les détails/ }).click()
+    await frontCard(page).getByRole('button', { name: 'Prix inexact ?' }).click()
+    await expect(page.getByRole('dialog', { name: 'Signaler un prix inexact' })).toBeVisible()
+    await expect(page).toHaveScreenshot('report.png')
+  })
+
+  test('a card that is not the best one', async ({ page }, info) => {
+    await openWithPosition(page)
+    await openList(page, info.project.name === 'wide')
+    await page.getByRole('button', { name: /^3\. / }).click()
+    await expect(page.getByRole('button', { name: 'Revenir au meilleur plein' })).toBeVisible()
+    await expect(page).toHaveScreenshot('other-card.png')
+  })
+
+  test.describe('in the dark', () => {
+    test.use({ colorScheme: 'dark' })
+    test('the main screen', async ({ page }) => {
+      await openWithPosition(page)
+      await expect(frontCard(page)).toContainText('Le meilleur plein')
+      await expect(page).toHaveScreenshot('dark-main.png')
+    })
+    test('an unfolded card', async ({ page }) => {
+      await openWithPosition(page)
+      await frontCard(page).getByRole('button', { name: /Voir les détails/ }).click()
+      await expect(frontCard(page).getByRole('img', { name: /Prix des 7 derniers jours/ })).toBeVisible()
+      await expect(page).toHaveScreenshot('dark-unfolded.png')
+    })
+    test('first open', async ({ page }) => {
+      await prepare(page)
+      await page.goto('/')
+      await expect(page.getByRole('button', { name: 'Autour de moi' })).toBeVisible()
+      await expect(page).toHaveScreenshot('dark-welcome.png')
+    })
+  })
+})
