@@ -190,3 +190,8 @@
 .b3-root .b2-list { padding-bottom: 28px; }
 .x-wide .x-side-count b { margin-right: 0; }
 .x-side-foot { flex: none; margin: 0; padding: 10px 18px 12px; box-shadow: inset 0 1px 0 var(--line); font-size: 12px; line-height: 1.3; color: var(--ink-2); text-align: center; }
+
+/* fuel switch: the octane number sits small under the word, like the grade buttons on a pump */
+.b3-root .fb-fuel-opt > span:last-child { display: flex; flex-direction: column; align-items: center; gap: 1px; line-height: 1.05; }
+.b3-root .fb-fuel-opt small { font: 700 12px/1 var(--font-num); letter-spacing: .04em; }
+.b3-root .fb-fuel-opt { height: 38px; }
