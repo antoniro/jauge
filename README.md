@@ -14,13 +14,12 @@ Prices come from the [Régie de l'énergie](https://regieessencequebec.ca), to w
 
 ## Status
 
-**Design is done and prices are being collected; the app is not built yet.** This repository currently holds:
+**Design is done, prices are being collected, and the app is being built.** It is not published as a website yet. This repository holds:
 
 - the design documentation;
-- working mockups of every screen, with real station data and invented price history;
-- the job that fetches the Régie's prices every few minutes and records each change (its output is on the [`data` branch](../../tree/data)).
-
-Next: the app itself.
+- the job that fetches the Régie's prices every few minutes and records each change (its output is on the [`data` branch](../../tree/data));
+- the app, in progress: the main screen already runs on the live prices and the recorded history, borrowing its pieces from the mockups while each screen is rebuilt;
+- the mockups the design came from.
 
 ## Documentation
 
@@ -33,7 +32,7 @@ Next: the app itself.
 | [`GLOSSARY.md`](GLOSSARY.md) | The words used in the code, the interface and the docs |
 | [`docs/adr/`](docs/adr) | Decisions that are hard to undo, and why they were made |
 
-## Try the mockups
+## Run it
 
 You need Node 22 or newer.
 
@@ -42,9 +41,13 @@ npm install
 npm run dev
 ```
 
-Then open `http://localhost:5173/fable.html`. The bar at the bottom of the page switches between the mockup variants, light and dark, phone and wide screen. Variant **B3** is the chosen design; the others are earlier directions kept for reference.
+- `http://localhost:5173/` is the app.
+- `http://localhost:5173/fable.html` is the mockups. The bar at the bottom switches between variants, light and dark, phone and wide screen. Variant **B3** is the chosen design; the others are earlier directions kept for reference. The mockup code in `src/prototype/` is throwaway.
 
-The mockup code in `src/prototype/` is throwaway. It exists to answer design questions and will not become the app.
+```sh
+npm test        # the ranking rules, the history reader and the price collector
+npm run build   # type-check and build
+```
 
 ## Built with
 

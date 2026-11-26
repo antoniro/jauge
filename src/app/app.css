@@ -1,0 +1,2 @@
+/* The app fills the window. (The same styles inside the mockup page draw a phone frame.) */
+.fb-phone.app { width: 100%; height: 100dvh; border-radius: 0; box-shadow: none; }

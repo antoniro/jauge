@@ -24,14 +24,19 @@ export async function loadStations(): Promise<Snapshot & { live: boolean }> {
   return { ...(await shipped.json()), live: false }
 }
 
-export async function loadMeta(): Promise<Meta | null> {
-  const res = await get('meta.json')
-  return res ? res.json() : null
+let meta: Promise<Meta | null> | undefined
+/** When the data was generated and since when prices have been collected. Asked once. */
+export function loadMeta(): Promise<Meta | null> {
+  meta ??= get('meta.json').then((res) => (res ? res.json() : null))
+  return meta
 }
 
 /** One station's price changes for one fuel over a period, oldest first. A month with no file simply has no changes. */
 export async function loadHistory(id: string, fuel: Fuel, from: number, to: number): Promise<Change[]> {
-  const files = await Promise.all(monthsBetween(from, to).map((m) => get(`h/${m}/${id}.csv`)))
+  // nothing was collected before `since`, so there is no point asking for older months
+  const since = Date.parse((await loadMeta())?.since ?? '')
+  const months = monthsBetween(Number.isNaN(since) ? from : Math.max(from, since), to)
+  const files = await Promise.all(months.map((m) => get(`h/${m}/${id}.csv`)))
   const texts = await Promise.all(files.map((f) => (f ? f.text() : '')))
   return texts.flatMap((t) => parseHistory(t, fuel))
 }
