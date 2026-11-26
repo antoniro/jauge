@@ -140,7 +140,7 @@ components:
 
 This file describes how Jauge looks. How it behaves (what a tap does, how savings are calculated, what the map shows at each zoom) is in [`docs/design/behaviour.md`](docs/design/behaviour.md). What the product is and for whom is in [`PRODUCT.md`](PRODUCT.md).
 
-The design was worked out in throwaway mockups, which are not kept in this repository. The screenshots in `docs/design/img/` come from them. The app's styles are in `src/app/styles/`; where the code and this file disagree, this file wins.
+The design was worked out in throwaway mockups, which are not kept in this repository. The screenshots in `docs/design/img/` come from them. The app's styles are in `src/app/styles/` (one sheet per area: `tokens.css` holds the colours and type, then `card.css`, `map.css`, `list.css` and so on); where the code and this file disagree, this file wins.
 
 ![Main screen on a phone](docs/design/img/main.webp)
 

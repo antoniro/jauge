@@ -1,0 +1,21 @@
+/* The settings sheet: car size and consumption, search radius, route app, language and theme. */
+.settings h2 { margin: 2px 0 0; font-size: 20px; font-weight: 700; }
+.settings section { margin-top: 20px; }
+.settings h3 { margin: 0 0 8px; font-size: 14px; font-weight: 600; color: var(--ink-2); }
+.settings-pair { display: grid; gap: 20px; }
+
+/* three car drawings, each standing for a range of consumption */
+.car-sizes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.car-sizes button { display: grid; place-items: center; height: 68px; border-radius: 18px; background: var(--surface-2); color: var(--ink-2); transition: background .18s, color .18s, transform .18s var(--spring); }
+.car-sizes button:active { transform: scale(.96); }
+.car-sizes button[aria-checked='true'] { background: var(--pill); color: var(--on-pill); }
+.car-sizes svg { width: 66px; height: 37px; }
+.car-sizes button:nth-child(1) svg { transform: scale(.86); }
+.car-sizes button:nth-child(3) svg { transform: scale(1.12); }
+
+/* − 8,0 L / 100 km + */
+.consumption-stepper { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; padding: 5px; border-radius: 999px; background: var(--surface-2); }
+.consumption-stepper button { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); }
+.consumption-stepper button:disabled { opacity: .4; }
+.consumption-stepper span { font-size: 14px; color: var(--ink-2); }
+.consumption-stepper span b { margin-right: 4px; font: 800 20px/1 var(--font-num); color: var(--ink); }

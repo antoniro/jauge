@@ -1,0 +1,40 @@
+/* The design tokens only: colours, fonts and the spring curve, for both themes and every accent. They are described in DESIGN.md. */
+:root {
+  --font-ui: 'Instrument Sans Variable', system-ui, sans-serif;
+  --font-num: 'Big Shoulders Variable', 'Instrument Sans Variable', system-ui, sans-serif;
+  --spring: cubic-bezier(.2, .9, .25, 1.15);
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #E6E8EC; --surface: #FFFFFF; --surface-2: #F1F2F5;
+  --ink: #14171C; --ink-2: #565C66; --ink-3: #8A909A; --line: rgba(20, 23, 28, .1);
+  --pill: #000000; --on-pill: #FFFFFF;
+  --sign: #000000; --on-sign: #FFFFFF;
+  --map-land: #E9EBEF; --map-water: #C9D4E2; --map-road: #FFFFFF;
+  --shadow-1: 0 1px 1px rgba(20, 23, 28, .06), 0 6px 16px -6px rgba(20, 23, 28, .18);
+  --shadow-2: 0 2px 2px rgba(20, 23, 28, .05), 0 22px 44px -18px rgba(20, 23, 28, .38);
+  --shell: #CDD0D6;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0D0F12; --surface: #181B20; --surface-2: #21252B;
+  --ink: #F1F3F6; --ink-2: #A9AFB9; --ink-3: #6F7682; --line: rgba(255, 255, 255, .1);
+  --pill: #F1F3F6; --on-pill: #000000;
+  --sign: #000000; --on-sign: #FFFFFF;
+  --map-land: #14171B; --map-water: #07090B; --map-road: #2B3037;
+  --shadow-1: 0 1px 0 rgba(255, 255, 255, .05) inset, 0 8px 18px -8px rgba(0, 0, 0, .7);
+  --shadow-2: 0 1px 0 rgba(255, 255, 255, .06) inset, 0 26px 50px -18px rgba(0, 0, 0, .9);
+  --shell: #000000;
+}
+:root[data-accent='cone'] { --accent: #FF5B1F; --on-accent: #000; }
+:root[data-accent='lime'] { --accent: #D2F03C; --on-accent: #000; }
+:root[data-accent='fleur'] { --accent: #2F5BFF; --on-accent: #fff; }
+:root[data-accent='menthe'] { --accent: #19C37D; --on-accent: #000; }
+:root[data-theme='light'][data-accent='cone'] { --accent-ink: #C83C00; }
+:root[data-theme='light'][data-accent='lime'] { --accent-ink: #536A00; }
+:root[data-theme='light'][data-accent='fleur'] { --accent-ink: #2449E0; }
+:root[data-theme='light'][data-accent='menthe'] { --accent-ink: #0A7A4C; }
+:root[data-theme='dark'][data-accent='cone'] { --accent-ink: #FF7C4A; }
+:root[data-theme='dark'][data-accent='lime'] { --accent-ink: #D2F03C; }
+:root[data-theme='dark'][data-accent='fleur'] { --accent-ink: #8FA7FF; }
+:root[data-theme='dark'][data-accent='menthe'] { --accent-ink: #3BE39B; }

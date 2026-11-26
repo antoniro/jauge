@@ -55,7 +55,7 @@ function recolour(map: maplibregl.Map, dark: boolean) {
   }
 }
 
-/** A gentle arc from the person to the station (no routing service in the mockup). */
+/** A gentle arc from the person to the station: there is no routing service, so it does not follow the roads. */
 function arc(a: Origin, b: Station): [number, number][] {
   const mx = (a.lon + b.lon) / 2, my = (a.lat + b.lat) / 2
   const dx = b.lon - a.lon, dy = b.lat - a.lat
@@ -176,7 +176,7 @@ export default function StationMap({ stations, pills, fuel, origin, dark, accent
       if (pool.has(id)) return
       const price = s.p[data.current.fuel]!
       const wrap = document.createElement('button')
-      wrap.className = 'b-pin quiet'
+      wrap.className = 'price-sign quiet'
       wrap.setAttribute('aria-label', `${s.b ?? 'Station'}, ${fmtPrice(price)} cents le litre`)
       const inner = document.createElement('span'); inner.textContent = fmtPrice(price)
       wrap.appendChild(inner)
@@ -222,7 +222,7 @@ export default function StationMap({ stations, pills, fuel, origin, dark, accent
       if (pool.has(k)) return
       changed = true
       const wrap = document.createElement('button')
-      wrap.className = 'b-region b-area'
+      wrap.className = 'area-bubble town'
       wrap.setAttribute('aria-label', `${a.name}, à partir de ${fmtPrice(a.price)} cents le litre. Zoomer`)
       const name = document.createElement('small'); name.textContent = a.name
       const price = document.createElement('b'); price.textContent = fmtPrice(a.price)
@@ -288,12 +288,12 @@ export default function StationMap({ stations, pills, fuel, origin, dark, accent
     meMarker.current?.remove()
     meMarker.current = null
     if (showMe) {
-      const me = document.createElement('div'); me.className = 'b-me'
+      const me = document.createElement('div'); me.className = 'position-dot'
       meMarker.current = new maplibregl.Marker({ element: me }).setLngLat([origin.lon, origin.lat]).addTo(map)
     }
     pills.forEach((r, i) => {
       const wrap = document.createElement('button')
-      wrap.className = 'b-pin'
+      wrap.className = 'price-sign'
       wrap.setAttribute('aria-label', `${r.s.b ?? 'Station'}, ${fmtPrice(r.price)} cents le litre`)
       const inner = document.createElement('span'); inner.textContent = fmtPrice(r.price); inner.style.setProperty('--i', String(i))
       wrap.appendChild(inner)
@@ -323,7 +323,7 @@ export default function StationMap({ stations, pills, fuel, origin, dark, accent
     }).sort((a, b) => a.d - b.d)
     for (const r of made) {
       const wrap = document.createElement('button')
-      wrap.className = 'b-region'
+      wrap.className = 'area-bubble region'
       wrap.setAttribute('aria-label', `${r.name}, à partir de ${fmtPrice(r.low.p[fuel]!)} cents le litre. Zoomer`)
       const name = document.createElement('small'); name.textContent = SHORT_REGION[r.name] ?? r.name
       const price = document.createElement('b'); price.textContent = fmtPrice(r.low.p[fuel]!)
@@ -349,7 +349,7 @@ export default function StationMap({ stations, pills, fuel, origin, dark, accent
     selMarker.current?.remove(); selMarker.current = null
     const selPrice = selected?.p[fuel]
     if (selected && selPrice != null && !markers.current.has(selected.id)) {
-      const wrap = document.createElement('div'); wrap.className = 'b-pin on'; wrap.style.zIndex = '6'
+      const wrap = document.createElement('div'); wrap.className = 'price-sign on'; wrap.style.zIndex = '6'
       const inner = document.createElement('span'); inner.textContent = fmtPrice(selPrice); inner.style.setProperty('--i', '0')
       wrap.appendChild(inner)
       selMarker.current = new maplibregl.Marker({ element: wrap, anchor: 'bottom' }).setLngLat([selected.lon, selected.lat]).addTo(map)
@@ -384,5 +384,5 @@ export default function StationMap({ stations, pills, fuel, origin, dark, accent
     fit(new maplibregl.LngLatBounds([origin.lon, origin.lat], [origin.lon, origin.lat]).extend([selected.lon, selected.lat]), 14.2, 850)
   }), [selected, bestId, refId, origin, padBottom, padTop, padLeft, pills, fuel, dark, frame]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <div ref={el} className="b-map" />
+  return <div ref={el} className="station-map" />
 }

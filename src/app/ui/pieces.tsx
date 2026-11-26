@@ -13,14 +13,14 @@ const ODO_SPRING = { type: 'spring', stiffness: 170, damping: 24, mass: 0.9 } as
 export function Odometer({ value, className = '' }: { value: string; className?: string }) {
   const chars = [...value]
   return (
-    <span className={`fb-odo ${className}`} role="text" aria-label={value}>
+    <span className={`odometer ${className}`} role="text" aria-label={value}>
       {chars.map((ch, i) => {
         const key = chars.length - i // keyed from the right so units stay put when a digit is added
         const d = DIGITS.indexOf(ch)
-        if (d < 0) return <span key={`s${key}`} className="fb-odo-s" aria-hidden>{ch === ' ' ? ' ' : ch}</span>
+        if (d < 0) return <span key={`s${key}`} className="odometer-symbol" aria-hidden>{ch === ' ' ? ' ' : ch}</span>
         return (
-          <span key={`d${key}`} className="fb-odo-d" aria-hidden>
-            <motion.span className="fb-odo-strip" initial={{ y: '0em' }} animate={{ y: `${-d}em` }}
+          <span key={`d${key}`} className="odometer-digit" aria-hidden>
+            <motion.span className="odometer-strip" initial={{ y: '0em' }} animate={{ y: `${-d}em` }}
               transition={{ ...ODO_SPRING, delay: Math.min(0.18, (chars.length - 1 - i) * 0.03) }}>
               {DIGITS.map((n) => <span key={n}>{n}</span>)}
             </motion.span>
@@ -47,10 +47,10 @@ export function BrandBadge({ brand, size = 40 }: { brand: string | null; size?: 
   const [a, b] = brand ? BRAND_TONES[brand] ?? [`hsl(${h % 360} 62% 46%)`, `hsl(${(h * 7) % 360} 70% 62%)`] : ['#8A909A', '#C9CDD3']
   const mark = brand ? h % 3 : 3
   return (
-    <svg className="fb-badge" width={size} height={size} viewBox="0 0 40 40" role="img" aria-label={brand ?? 'Station indépendante'}>
+    <svg className="brand-badge" width={size} height={size} viewBox="0 0 40 40" role="img" aria-label={brand ?? 'Station indépendante'}>
       <defs><clipPath id={id}><path d="M20 8.5c4.6 5.2 7.4 9.2 7.4 13.2a7.4 7.4 0 0 1-14.8 0c0-4 2.8-8 7.4-13.2Z" /></clipPath></defs>
-      <circle cx="20" cy="20" r="19" className="fb-badge-disc" />
-      <circle cx="20" cy="20" r="19" className="fb-badge-ring" />
+      <circle cx="20" cy="20" r="19" className="brand-badge-disc" />
+      <circle cx="20" cy="20" r="19" className="brand-badge-ring" />
       <g clipPath={`url(#${id})`}>
         <rect x="8" y="6" width="24" height="26" fill={a} />
         {mark === 0 && <rect x="8" y="21" width="24" height="12" fill={b} />}
@@ -63,22 +63,13 @@ export function BrandBadge({ brand, size = 40 }: { brand: string | null; size?: 
   )
 }
 
-// ---------- icons ----------
-export const IconLocate = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden>
-    <circle cx="8" cy="8" r="4.2" /><circle cx="8" cy="8" r="1" fill="currentColor" stroke="none" /><path d="M8 1v2.2M8 12.8V15M1 8h2.2M12.8 8H15" />
-  </svg>
-)
-export const IconGo = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden><path d="M14.3 1.7 1.9 6.6c-.5.2-.5.9 0 1.1l4.7 1.7 1.7 4.7c.2.5.9.5 1.1 0l4.9-12.4Z" /></svg>
-)
 // ---------- small shared UI ----------
 export function FuelSwitch({ j, id, className = '' }: { j: Jauge; id: string; className?: string }) {
   return (
-    <div className={`fb-fuel ${className}`} role="radiogroup" aria-label="Type de carburant">
+    <div className={`fuel-switch ${className}`} role="radiogroup" aria-label="Type de carburant">
       {FUELS.map((f) => (
-        <button key={f} role="radio" aria-checked={j.fuel === f} className="fb-fuel-opt" onClick={() => j.setFuel(f)}>
-          {j.fuel === f && <motion.span layoutId={`fuel-${id}`} className="fb-fuel-thumb" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
+        <button key={f} role="radio" aria-checked={j.fuel === f} className="fuel-option" onClick={() => j.setFuel(f)}>
+          {j.fuel === f && <motion.span layoutId={`fuel-${id}`} className="fuel-thumb" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
           <span>{FUEL_LABEL[f]}</span>
         </button>
       ))}
@@ -87,12 +78,12 @@ export function FuelSwitch({ j, id, className = '' }: { j: Jauge; id: string; cl
 }
 
 export function SourceLine({ className = '' }: { className?: string }) {
-  return <p className={`fb-source ${className}`}>Prix publiés par la Régie de l’énergie. Chaque station déclare les siens.</p>
+  return <p className={`source-line ${className}`}>Prix publiés par la Régie de l’énergie. Chaque station déclare les siens.</p>
 }
 
 export function Wordmark() {
   return (
-    <span className="fb-wordmark" aria-label="Jauge">
+    <span className="wordmark" aria-label="Jauge">
       {/* a car's fuel gauge, upright (F on top, E at the bottom), pared down for small sizes; the full icon is public/icon.svg */}
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" strokeLinecap="round" aria-hidden>
         <path d="M11.41 20.29A10 10 0 0 1 11.41 3.71" stroke="currentColor" strokeWidth="2.400" />
@@ -106,5 +97,5 @@ export function Wordmark() {
 
 export function GeoToast({ j }: { j: Jauge }) {
   if (!j.geoError) return null
-  return <motion.p className="fb-toast" role="status" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>{j.geoError}</motion.p>
+  return <motion.p className="toast" role="status" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>{j.geoError}</motion.p>
 }

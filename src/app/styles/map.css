@@ -1,0 +1,70 @@
+/* The map and everything drawn on it: price signs, the "you are here" dot, area and region bubbles, and MapLibre's own controls.
+   MapLibre's stylesheet may load before or after this one, so every rule that must beat one of its rules is more specific than it. */
+
+.main-screen { position: absolute; inset: 0; }
+/* two classes: beats MapLibre's .maplibregl-map { position: relative } */
+.main-screen .station-map { position: absolute; inset: 0; background: var(--map-land); }
+.station-map .maplibregl-ctrl-bottom-right { top: 108px; bottom: auto; right: 8px; opacity: .75; }
+/* three classes: beats MapLibre's .maplibregl-ctrl.maplibregl-ctrl-attrib and .maplibregl-ctrl-attrib.maplibregl-compact */
+.station-map .maplibregl-ctrl.maplibregl-ctrl-attrib { font-size: 10px; background: color-mix(in oklab, var(--surface) 70%, transparent); color: var(--ink-2); }
+.station-map .maplibregl-ctrl-attrib a { color: inherit; }
+
+/* ---------- price signs: the marker is the button MapLibre moves; the look lives on its inner span ---------- */
+.price-sign { padding: 0; cursor: pointer; }
+.price-sign::before { content: ''; position: absolute; inset: -8px -2px -10px; }
+.price-sign span {
+  position: relative; display: block; margin-bottom: 6px; padding: 4px 8px 5px; border-radius: 9px; background: var(--pill); color: var(--on-pill);
+  font: 700 15px/1 var(--font-num); letter-spacing: .02em; box-shadow: 0 3px 8px -2px rgba(0, 0, 0, .35); transform-origin: 50% 130%;
+  transition: transform .28s var(--spring), background .2s, opacity .2s;
+  animation: sign-drop .5s var(--spring) backwards; animation-delay: calc(.25s + var(--i) * 45ms);
+}
+/* the pointer under the sign */
+.price-sign span::after { content: ''; position: absolute; left: 50%; bottom: -4px; width: 9px; height: 9px; margin-left: -4.5px; background: inherit; transform: rotate(45deg); border-radius: 2px; }
+@keyframes sign-drop { from { transform: translateY(-26px) scale(.4); opacity: 0; } }
+.price-sign.best span { background: var(--accent); color: var(--on-accent); }
+.price-sign.on span { transform: scale(1.38); }
+/* the reference: an outlined sign with its name on it (wins over the best look when one station is both) */
+.price-sign.ref span { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink), 0 3px 8px -2px rgba(0, 0, 0, .35); padding: 17px 9px 5px; min-width: 70px; text-align: center; }
+.price-sign.ref span::before { content: 'Référence'; position: absolute; left: 0; right: 0; top: 5px; text-align: center; font: 650 9.5px/1 var(--font-ui); letter-spacing: 0; color: var(--ink-2); }
+.price-sign.ref span::after { box-shadow: inset -2px -2px 0 var(--ink); }
+/* a sign that would cover a more important one shrinks to a dot (a quiet tag just fades out instead) */
+.price-sign.mini:not(.on)::before { inset: -16px; }
+.price-sign.mini:not(.on):not(.quiet) span { width: 12px; height: 12px; padding: 0; margin-bottom: 0; border-radius: 50%; font-size: 0; box-shadow: 0 0 0 2px var(--surface); }
+.price-sign.mini:not(.on):not(.quiet) span::before, .price-sign.mini:not(.on):not(.quiet) span::after { content: none; }
+.price-sign.ref.mini:not(.on) span { min-width: 0; }
+
+/* stations without a card: a quiet light tag that floats over their dot */
+.price-sign.quiet::before { inset: -9px -4px -12px; }
+.price-sign.quiet span { margin: 0; padding: 3px 6px 4px; border-radius: 7px; background: var(--surface); color: var(--ink-2); font-size: 13px; font-weight: 650; box-shadow: 0 1px 3px rgba(0, 0, 0, .22); animation: quiet-rise .25s ease-out backwards; transition: opacity .18s; }
+.price-sign.quiet span::after { content: none; }
+.price-sign.quiet.mini { pointer-events: none; }
+.price-sign.quiet.mini span { opacity: 0; }
+@keyframes quiet-rise { from { opacity: 0; transform: translateY(3px); } }
+@media (prefers-reduced-motion: reduce) { .price-sign.quiet span { animation: none; } }
+
+/* ---------- the person's position ---------- */
+.position-dot { width: 18px; height: 18px; border-radius: 50%; background: var(--ink); border: 3.5px solid var(--surface); box-shadow: 0 2px 6px rgba(0, 0, 0, .3); }
+.position-dot::before { content: ''; position: absolute; inset: -14px; border-radius: 50%; background: var(--ink); opacity: .14; animation: pulse 2.4s ease-out infinite; }
+@keyframes pulse { from { transform: scale(.4); opacity: .3; } to { transform: scale(1.25); opacity: 0; } }
+
+/* ---------- area bubbles: the lowest price of a region (far away) or of a town or neighbourhood (in between) ----------
+   MapLibre moves the button itself, so the look lives on the inner span. Hidden ones stay placed and only fade out. */
+.station-map .area-bubble { padding: 0; cursor: pointer; visibility: hidden; transition: visibility 0s .2s; }
+.area-bubble > span { display: flex; flex-direction: column; align-items: center; background: var(--surface); color: var(--ink); box-shadow: var(--shadow-1); opacity: 0; transition: opacity .2s, transform .18s var(--spring); }
+.area-bubble:active > span { transform: scale(.95); }
+.area-bubble small { font: 600 12px/1 var(--font-ui); color: var(--ink-2); white-space: nowrap; }
+.area-bubble b { letter-spacing: .02em; }
+.area-bubble.region > span { gap: 3px; padding: 6px 11px 7px; border-radius: 13px; }
+.area-bubble.region b { font: 750 18px/1 var(--font-num); }
+/* in-between zooms: the same bubble for smaller areas, a touch smaller */
+.area-bubble.town > span { gap: 2px; padding: 5px 9px 6px; border-radius: 11px; }
+.area-bubble.town small { max-width: 104px; overflow: hidden; text-overflow: ellipsis; }
+.area-bubble.town b { font: 750 16px/1 var(--font-num); }
+
+/* ---------- zoom bands (data-band on the map): which of the layers above are shown ---------- */
+[data-band='region'] .area-bubble.region:not(.mini), [data-band='area'] .area-bubble.town:not(.mini) { visibility: visible; transition: none; }
+[data-band='region'] .area-bubble.region:not(.mini) > span, [data-band='area'] .area-bubble.town:not(.mini) > span { opacity: 1; }
+[data-band='area'] .price-sign.quiet { pointer-events: none; }
+[data-band='area'] .price-sign.quiet span { opacity: 0; }
+[data-band='region'] .price-sign { pointer-events: none; }
+[data-band='region'] .price-sign span { opacity: 0; }

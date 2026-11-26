@@ -1,0 +1,11 @@
+/* The first-open screen: the name, the stacked title on the relief, the two ways to start, the source line. */
+.welcome { position: absolute; inset: 0; z-index: 15; display: flex; flex-direction: column; padding: 30px 26px 26px; background: var(--relief) center top / cover no-repeat, var(--bg); color: var(--ink); }
+.welcome h1 { margin: auto 0 0; display: flex; flex-direction: column; font-family: var(--font-num); line-height: .96; letter-spacing: -.005em; }
+.welcome h1 span { display: block; }
+.welcome h1 .thin { font-size: 46px; font-weight: 300; color: var(--ink-2); }
+.welcome h1 .bold { font-size: 64px; font-weight: 850; }
+.welcome-actions { display: flex; flex-direction: column; gap: 10px; margin: 34px 0 22px; }
+.welcome-actions .go-button { height: 56px; font-size: 17px; }
+.welcome-actions .go-button > span { display: grid; }
+.ghost-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 56px; border-radius: 999px; background: var(--surface); box-shadow: var(--shadow-1); font-size: 17px; font-weight: 600; color: var(--ink); transition: transform .18s var(--spring); }
+.ghost-button:active { transform: scale(.97); }

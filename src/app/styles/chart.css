@@ -1,0 +1,23 @@
+/* The price chart in an unfolded card: the period switch, when the price last changed, and the line itself. */
+.price-chart { padding: 10px 12px 8px; border-radius: 14px; background: var(--surface-2); }
+.price-chart-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+.price-chart-head .segmented { padding: 2px; border-radius: 10px; background: color-mix(in oklab, var(--ink) 8%, transparent); }
+.price-chart-head .segmented button { position: relative; flex: none; height: 28px; padding: 0 10px; border-radius: 8px; font-size: 12px; font-weight: 600; }
+.price-chart-head .segmented button::after { content: ''; position: absolute; inset: -8px 0; }
+.price-chart-head p { margin: 0; min-width: 0; font-size: 12px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.price-chart-head p b { margin-right: 6px; font: 750 16px/1 var(--font-num); color: var(--ink); }
+
+/* the line: smooth, flat while the price holds, a soft ramp at each change */
+.price-chart-line { display: block; width: 100%; height: auto; overflow: visible; touch-action: pan-y; cursor: crosshair; }
+.price-chart-line .day { stroke: var(--line); stroke-width: 1; fill: none; }
+.price-chart-line .level { stroke: color-mix(in oklab, var(--ink) 22%, transparent); stroke-width: 1; stroke-dasharray: 2 4; fill: none; }
+.price-chart-line .step { fill: none; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.price-chart-line .cursor { stroke: var(--ink); stroke-width: 1; fill: none; }
+.price-chart-line .now { fill: var(--accent); stroke: var(--surface-2); stroke-width: 3; }
+.price-chart-line text { font: 500 12.5px var(--font-ui); fill: var(--ink-2); }
+.price-chart-line text.val { font: 700 13.5px var(--font-num); fill: var(--ink); }
+.price-chart-line text.today { fill: var(--ink); font-weight: 650; }
+/* the line draws itself once when the card unfolds */
+.station-card[data-open] .price-chart-line .step { stroke-dasharray: 1; animation: chart-draw .7s cubic-bezier(.16, 1, .3, 1) backwards .12s; }
+@keyframes chart-draw { from { stroke-dashoffset: 1; } }
+@media (prefers-reduced-motion: reduce) { .station-card[data-open] .price-chart-line .step { animation: none; } }

@@ -1,0 +1,54 @@
+/* The list of stations: its rows (phone and wide), and on a phone the sheet under the cards that opens over the map. */
+
+/* ---------- list sheet (phone) ---------- */
+/* the map darkens as the list rises */
+.list-scrim { position: absolute; inset: 0; background: #000; pointer-events: none; }
+.list-sheet { position: absolute; z-index: 7; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; overflow: clip; background: var(--surface); border-radius: 26px 26px 0 0; box-shadow: 0 -10px 30px -12px rgba(0, 0, 0, .3); will-change: transform; }
+/* its head, on the relief: the count and the source on two short lines, and "Liste" or "Carte" */
+.list-head {
+  position: absolute; z-index: 5; top: 0; left: 0; right: 0; height: 80px; padding: 8px 14px 0 20px; touch-action: none; cursor: grab; overflow: hidden;
+  background: var(--bg) var(--relief) top center / 100% 340px no-repeat; transition: height .3s ease, box-shadow .2s;
+}
+.list-sheet[data-open] .list-head { height: 68px; }
+.list-head[data-scrolled] { box-shadow: 0 1px 0 var(--line), 0 10px 18px -14px rgba(0, 0, 0, .5); }
+.list-head .grab-handle { margin-bottom: 6px; }
+.list-head-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; height: 44px; }
+.list-count { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.list-count p { margin: 0; min-width: 0; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list-count p b { margin-right: 6px; font-size: 16px; font-weight: 680; }
+.list-count p span { font-size: 14px; color: var(--ink-2); }
+.list-source { font-size: 12px; color: var(--ink-2); }
+.list-toggle { flex: none; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px 0 13px; border-radius: 999px; background: var(--pill); color: var(--on-pill); font-size: 15px; font-weight: 640; }
+.list-scroll { position: absolute; inset: 0; z-index: 0; isolation: isolate; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+
+/* ---------- the list and its rows ---------- */
+.station-list { margin: 0; padding: 72px 8px 28px; list-style: none; }
+.station-list li + li { background: linear-gradient(var(--line), var(--line)) top right 12px / calc(100% - 112px) 1px no-repeat; }
+/* two lines: rank, badge, name with distance and town, price; then the savings bar and the amount */
+.list-row {
+  display: grid; grid-template-columns: 30px 46px minmax(0, 1fr) auto; grid-template-areas: 'n badge main pill' '. . bar real'; column-gap: 12px; row-gap: 10px; align-items: center;
+  width: 100%; padding: 15px 12px 15px 6px; border-radius: 20px; text-align: left;
+}
+.list-row[data-on] { background: var(--surface-2); }
+/* an overview of a place picked by hand: plain price rows, no savings yet */
+.list-row.plain { grid-template-areas: 'n badge main pill'; row-gap: 0; }
+.list-row-rank { grid-area: n; justify-self: center; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font: 700 20px/1 var(--font-num); color: var(--ink-3); }
+.list-row[data-best] .list-row-rank { background: var(--accent); color: var(--on-accent); }
+/* after the best rule on purpose: the reference's outline and ink win when one station is both */
+.list-row[data-ref] .list-row-rank { box-shadow: inset 0 0 0 1.5px var(--ink); color: var(--ink); }
+.list-row .brand-badge { grid-area: badge; }
+.list-row-main { grid-area: main; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.list-row-main b { font-size: 17px; font-weight: 660; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list-row-main small { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ink-2); white-space: nowrap; overflow: hidden; }
+.list-row-main small span { color: var(--ink); font-weight: 550; }
+.list-row-main small i { flex: none; width: 1px; height: 12px; background: var(--ink-3); opacity: .6; }
+.list-row-price { grid-area: pill; padding: 7px 12px 8px; font: 700 21px/1 var(--font-num); }
+.list-row-bar { grid-area: bar; display: block; height: 8px; border-radius: 8px; background: var(--surface-2); overflow: hidden; }
+.list-row[data-on] .list-row-bar { background: color-mix(in oklab, var(--ink) 9%, transparent); }
+.list-row-bar i { display: block; height: 100%; border-radius: 8px; background: var(--pill); transform-origin: 0 50%; transition: transform .5s cubic-bezier(.2, .8, .2, 1); will-change: transform; }
+.list-row[data-best] .list-row-bar i { background: var(--accent); }
+.list-row-savings { grid-area: real; justify-self: end; min-width: 76px; text-align: right; font: 800 25px/1 var(--font-num); white-space: nowrap; }
+.list-row-savings .odometer { justify-content: flex-end; }
+.list-row-savings[data-neg] { color: var(--ink-3); }
+/* the reference row carries an outlined tag instead of an amount */
+.list-row-ref { grid-area: real; justify-self: end; display: inline-flex; align-items: center; height: 28px; padding: 0 11px; border-radius: 999px; box-shadow: inset 0 0 0 1.5px var(--ink); font-size: 13px; font-weight: 650; }

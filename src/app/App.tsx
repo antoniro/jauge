@@ -3,6 +3,7 @@ import '@fontsource-variable/big-shoulders'
 import '@fontsource-variable/instrument-sans'
 import { MotionConfig } from 'motion/react'
 import { Suspense, lazy, useEffect, useRef, useState } from 'react'
+import './styles/tokens.css'
 import './styles/base.css'
 import { useJauge } from './state'
 
@@ -39,7 +40,7 @@ export default function App() {
   const wide = size.w >= WIDE
   return (
     <MotionConfig reducedMotion="user">
-      <div ref={box} className="fb-phone">
+      <div ref={box} className="app">
         <Suspense fallback={null}>
           <MainScreen key={wide ? 'wide' : 'phone'} j={j} dark={dark} accent="cone" h={size.h} wide={wide} />
         </Suspense>

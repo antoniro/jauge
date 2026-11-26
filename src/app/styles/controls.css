@@ -1,0 +1,65 @@
+/* Buttons, pills, chips and switches, and the phone's top controls: where to look and settings on the left, fuel and litres on the right. */
+
+/* ---------- main button ("Y aller", "Autour de moi"); each place sets its own height ---------- */
+.go-button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0 22px; border-radius: 999px;
+  background: var(--accent); color: var(--on-accent); font-weight: 650; font-size: 16px; text-decoration: none; transition: transform .18s var(--spring);
+}
+.go-button:active { transform: scale(.95); }
+.go-button.quiet { background: var(--pill); color: var(--on-pill); }
+
+/* ---------- price pill: a price and its ¢/L; each place sets its own size ---------- */
+.price-pill { display: inline-flex; align-items: baseline; gap: 4px; border-radius: 999px; background: var(--pill); color: var(--on-pill); }
+.price-pill small { font: 550 11px/1 var(--font-ui); opacity: .7; }
+
+/* ---------- top controls (phone) ---------- */
+.top-controls { position: absolute; z-index: 5; top: 14px; left: 14px; right: 14px; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; pointer-events: none; }
+.top-controls > * { pointer-events: auto; }
+.place-controls { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; }
+.fill-controls { display: flex; flex-direction: column; align-items: stretch; gap: 6px; }
+
+/* ---------- place chip: where the person is looking ---------- */
+.place-chip {
+  position: relative; display: inline-flex; align-items: center; gap: 6px; height: 40px; max-width: 148px; padding: 0 10px 0 11px; border-radius: 999px;
+  background: var(--surface); box-shadow: var(--shadow-1); font-size: 14px; font-weight: 550; white-space: nowrap;
+}
+.place-chip::after { content: ''; position: absolute; inset: -5px 0; }
+.place-chip > span:first-child { display: grid; color: var(--accent-ink); }
+.place-chip > span:nth-child(2) { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.place-chip > svg { flex: none; color: var(--ink-2); }
+
+/* ---------- settings button ---------- */
+.settings-button { position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--surface); box-shadow: var(--shadow-1); color: var(--ink); transition: transform .18s var(--spring); }
+.settings-button:active { transform: scale(.92); }
+
+/* ---------- fuel switch: the selected fuel sits on a thumb that slides between the three ---------- */
+.fuel-switch { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--surface); box-shadow: var(--shadow-1); }
+.fuel-option { position: relative; height: 34px; padding: 0 11px; border-radius: 999px; font-size: 14px; font-weight: 550; color: var(--ink-2); transition: color .2s; }
+.fuel-option::before { content: ''; position: absolute; inset: -5px 0; }
+.fuel-option > span:last-child { position: relative; }
+.fuel-option[aria-checked='true'] { color: var(--on-pill); }
+.fuel-thumb { position: absolute; inset: 0; border-radius: 999px; background: var(--pill); }
+
+/* ---------- litres stepper: − 50 L + ---------- */
+.litres-stepper { display: inline-flex; align-items: center; gap: 2px; padding: 3px; border-radius: 999px; background: var(--surface); box-shadow: var(--shadow-1); }
+.fill-controls .litres-stepper { justify-content: space-between; }
+.litres-stepper button {
+  position: relative; flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%;
+  background: var(--surface); box-shadow: 0 1px 3px rgba(0, 0, 0, .18); font: 700 20px/1 var(--font-ui); color: var(--ink); transition: transform .18s var(--spring), opacity .2s;
+}
+.fill-controls .litres-stepper button { background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+.litres-stepper button::after { content: ''; position: absolute; inset: -4px; }
+.litres-stepper button:active { transform: scale(.86); }
+.litres-stepper button:disabled { opacity: .35; }
+.litres-value { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 74px; padding: 0 4px; font: 750 19px/1 var(--font-num); letter-spacing: .01em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.litres-value svg { color: var(--ink-2); }
+.litres-value .odometer { margin-right: -2px; }
+
+/* ---------- segmented control (settings, chart period) ---------- */
+.segmented { display: flex; padding: 3px; border-radius: 14px; background: var(--surface-2); }
+.segmented button { flex: 1; min-width: 0; height: 38px; padding: 0 8px; border-radius: 11px; font-size: 14px; font-weight: 560; color: var(--ink-2); white-space: nowrap; transition: background .18s, color .18s; }
+.segmented button[aria-checked='true'] { background: var(--pill); color: var(--on-pill); }
+
+/* ---------- "Chercher ici", over the map once it has been dragged away ---------- */
+.search-here { position: absolute; z-index: 5; top: 122px; left: 50%; display: inline-flex; align-items: center; gap: 7px; height: 40px; padding: 0 16px 0 13px; border-radius: 999px; background: var(--pill); color: var(--on-pill); box-shadow: var(--shadow-2); font-size: 14px; font-weight: 620; white-space: nowrap; }
+.search-here::after { content: ''; position: absolute; inset: -4px 0; }

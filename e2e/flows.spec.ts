@@ -82,7 +82,7 @@ test.describe('with a position', () => {
     await expect(page).toHaveScreenshot('main.png')
     await openList(page, info.project.name === 'wide')
     await expect(page.getByRole('button', { name: /^1\. / })).toBeVisible()
-    await expect(page.locator('.b3-ref-tag')).toHaveText('Référence')
+    await expect(page.locator('.list-row-ref')).toHaveText('Référence')
   })
 
   test('there is always a way back to the best fill-up', async ({ page }, info) => {
@@ -147,10 +147,10 @@ test.describe('settings', () => {
   test('litres and the car change the savings, and are remembered', async ({ page }) => {
     await openWithPosition(page)
     await expect(frontCard(page)).toContainText('Le meilleur plein')
-    const before = await frontCard(page).locator('.b2-real .fb-odo').getAttribute('aria-label')
+    const before = await frontCard(page).locator('.card-savings .odometer').getAttribute('aria-label')
     await page.getByRole('button', { name: '5 litres de plus' }).click()
     await expect(page.getByLabel('55 litres')).toBeVisible()
-    await expect(frontCard(page).locator('.b2-real .fb-odo')).not.toHaveAttribute('aria-label', before!)
+    await expect(frontCard(page).locator('.card-savings .odometer')).not.toHaveAttribute('aria-label', before!)
     await page.getByRole('button', { name: 'Réglages' }).click()
     const settings = page.getByRole('dialog', { name: 'Réglages' })
     await settings.getByRole('radio', { name: 'VUS ou camion' }).click()
