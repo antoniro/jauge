@@ -1,0 +1,145 @@
+/* PROTOTYPE — throwaway. Variant B3, "La carte, v3". Loaded on top of b.css + b2.css; scoped to .b3-root. */
+
+/* global controls: where I am, which fuel, how many litres */
+.b3-top { align-items: flex-start; }
+.b3-pump { display: flex; flex-direction: column; align-items: stretch; gap: 6px; }
+.b3-pump .b3-step { justify-content: space-between; background: var(--surface); box-shadow: var(--shadow-1); }
+.b3-pump .b3-step button { background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+.b3-root .b-map .maplibregl-ctrl-bottom-right { top: 108px; }
+
+/* map: the reference station is an outlined tag with its name on it; hidden tags become dots */
+.b-pin.ref span { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink), 0 3px 8px -2px rgba(0, 0, 0, .35); padding: 17px 9px 5px; min-width: 70px; text-align: center; }
+.b-pin.ref span::before { content: 'RÉFÉRENCE'; position: absolute; left: 0; right: 0; top: 6px; text-align: center; font: 700 8px/1 var(--font-ui); letter-spacing: .05em; color: var(--ink-2); }
+.b-pin.ref span::after { box-shadow: inset -2px -2px 0 var(--ink); }
+.b-pin.mini:not(.on) span { width: 12px; height: 12px; padding: 0; margin-bottom: 0; border-radius: 50%; font-size: 0; box-shadow: 0 0 0 2px var(--surface); }
+.b-pin.mini:not(.on) span::before, .b-pin.mini:not(.on) span::after { content: none; }
+
+/* card: who, how much you save + its price, what it is compared to, go */
+.b3-root .b-rail-wrap { padding-top: 16px; }
+.b3-root .b-card { width: 326px; padding: 20px 18px 16px; border-radius: 28px; }
+.b3-ribbon { position: absolute; top: -13px; left: 18px; margin: 0; height: 26px; padding: 0 11px; display: inline-flex; align-items: center; border-radius: 999px; background: var(--pill); color: var(--on-pill); font-size: 12.5px; font-weight: 660; box-shadow: var(--shadow-1); }
+.b3-card[data-best] .b3-ribbon { background: var(--accent); color: var(--on-accent); }
+.b3-card[data-ref] .b3-ribbon { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink), var(--shadow-1); }
+.b3-head { display: flex; align-items: center; gap: 12px; }
+.b3-head > div { min-width: 0; }
+.b3-root .b-card h2 { font-size: 19px; }
+.b3-root .b-where { margin-top: 2px; font-size: 13.5px; }
+.b3-nums { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.b3-root .b2-real b { font-size: 46px; }
+.b3-root .b2-real p { margin-top: 5px; font-size: 14px; }
+.b3-price { flex: none; align-self: flex-start; margin-top: 3px; padding: 9px 14px 10px; font-size: 27px; }
+.b3-price small { font-size: 12px; }
+.b3-card[data-best] .b3-price { background: var(--accent); color: var(--on-accent); }
+.b3-card[data-ref] .b3-price { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); }
+.b3-strip { display: flex; align-items: center; gap: 9px; width: 100%; height: 44px; margin: 12px 0 0; padding: 0 12px 0 14px; border-radius: 16px; background: var(--surface-2); color: var(--ink); text-align: left; }
+.b3-strip > i { font-style: normal; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.b3-strip > svg { color: var(--ink-2); }
+.b3-strip > span { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
+.b3-strip > span b { font-size: 14.5px; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.b3-strip > span small { font-size: 12px; color: var(--ink-2); }
+.b3-strip > em { flex: none; font-style: normal; padding: 5px 10px 6px; border-radius: 999px; background: var(--surface); box-shadow: inset 0 0 0 1.5px var(--ink); font: 750 18px/1 var(--font-num); letter-spacing: .02em; }
+.b3-better { margin-top: 8px; }
+.b3-better > em { background: var(--accent); color: var(--on-accent); box-shadow: none; }
+.b3-go { display: flex; justify-content: space-between; width: 100%; height: 50px; margin-top: 10px; padding: 0 22px 0 20px; font-size: 17px; }
+.b3-go > span { display: inline-flex; align-items: center; gap: 10px; }
+.b3-go > small { font-size: 14.5px; font-weight: 600; opacity: .85; }
+
+/* list: the reference row carries the same outlined tag instead of an amount */
+.b3-ref-tag { grid-area: real; justify-self: end; display: inline-flex; align-items: center; height: 28px; padding: 0 11px; border-radius: 999px; box-shadow: inset 0 0 0 1.5px var(--ink); font-size: 13px; font-weight: 650; }
+.b3-root .b2-row[data-ref] .b2-row-n { box-shadow: inset 0 0 0 1.5px var(--ink); color: var(--ink); }
+
+/* − 50 L + */
+.b3-step { display: inline-flex; align-items: center; gap: 2px; padding: 3px; border-radius: 999px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+.b3-step button { flex: none; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 3px rgba(0, 0, 0, .18); font: 700 20px/1 var(--font-ui); color: var(--ink); transition: transform .18s var(--spring), opacity .2s; }
+.b3-step button:active { transform: scale(.86); }
+.b3-step button:disabled { opacity: .35; }
+.b3-step-val { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-width: 74px; padding: 0 4px; font: 750 19px/1 var(--font-num); letter-spacing: .01em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.b3-step-val svg { color: var(--ink-2); }
+
+/* page dots under the cards */
+.b3-dots { display: flex; justify-content: center; margin: 10px 20px 0 0; pointer-events: none; }
+.b3-dots::before { content: none; }
+.b3-dots { gap: 5px; }
+.b3-dots i { width: 6px; height: 6px; border-radius: 6px; background: var(--ink); opacity: .28; transition: width .3s var(--spring), opacity .2s; }
+.b3-dots i[data-on] { width: 18px; opacity: 1; }
+
+/* sheet head: closed = count + "Liste"; open = count + "Carte", then the litres stepper */
+.b3-toggle { flex: none; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px 0 13px; border-radius: 999px; background: var(--pill); color: var(--on-pill); font-size: 15px; font-weight: 640; }
+.b3-root .b2-source { position: absolute; left: 20px; right: 14px; top: 68px; margin: 0; }
+.b3-root .b2-list { padding-top: 72px; }
+
+/* compact card: same pieces, smaller, about 215px tall */
+.b3-root .b-card { padding: 16px 16px 14px; border-radius: 26px; }
+.b3-root .b3-head { gap: 10px; }
+.b3-root .b-card h2 { font-size: 17px; }
+.b3-root .b-where { margin-top: 1px; font-size: 12.5px; }
+.b3-root .b3-nums { margin-top: 10px; align-items: center; }
+.b3-root .b2-real { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.b3-root .b2-real b { font-size: 34px; }
+.b3-root .b2-real p { margin: 0; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; }
+.b3-root .b3-price { align-self: center; margin: 0; padding: 6px 11px 7px; font-size: 21px; }
+.b3-root .b3-price small { font-size: 11px; }
+.b3-root .b3-strip { height: 36px; margin-top: 10px; padding: 0 6px 0 12px; gap: 8px; border-radius: 13px; }
+.b3-root .b3-strip > span { flex-direction: row; align-items: baseline; gap: 6px; white-space: nowrap; overflow: hidden; }
+.b3-root .b3-strip > span b { flex: none; max-width: 100%; font-size: 13.5px; }
+.b3-root .b3-strip > span small { overflow: hidden; text-overflow: ellipsis; }
+.b3-root .b3-strip > em { padding: 4px 9px 5px; font-size: 16px; }
+.b3-root .b3-better { margin-top: 6px; }
+.b3-root .b3-go { height: 44px; margin-top: 8px; padding: 0 18px 0 16px; font-size: 15.5px; }
+.b3-root .b3-go > small { font-size: 13.5px; }
+
+/* polish pass: sizes on the 12 / 14 / 16 scale, 44px touch areas, pressed states, sentence case */
+.b3-root .b-where, .b3-root .b3-ribbon { font-size: 12px; }
+.b3-root .b2-real p, .b3-root .b3-strip > i, .b3-root .b3-strip > span b, .b3-root .b3-go > small { font-size: 14px; }
+.b3-root .b3-go { font-size: 16px; }
+.b3-root .b3-nums, .b3-root .b3-strip { margin-top: 12px; }
+.b3-root button.b3-strip { position: relative; transition: transform .18s var(--spring), background .15s; }
+.b3-root button.b3-strip:active { transform: scale(.98); background: color-mix(in oklab, var(--ink) 10%, var(--surface)); }
+.b3-root button.b3-strip::after, .b3-root .fb-fuel-opt::before, .b3-root .fb-locate::after, .b3-root .b3-step button::after { content: ''; position: absolute; inset: -5px 0; }
+.b3-root .fb-locate, .b3-root .b3-step button { position: relative; }
+.b3-root .b3-step button { width: 38px; height: 38px; }
+.b3-root .b3-step button::after { inset: -4px; }
+.b3-root .b3-step-val { gap: 6px; }
+.b3-root .b3-step-val .fb-odo { margin-right: -2px; }
+.b3-root .b3-toggle { height: 44px; }
+.b3-root .b2-head-row { height: 44px; }
+.b3-root .b-pin::before { content: ''; position: absolute; inset: -8px -2px -10px; }
+.b3-root .b-pin.mini:not(.on)::before { inset: -16px; }
+.b-pin.ref span::before { content: 'Référence'; top: 5px; font: 650 9.5px/1 var(--font-ui); letter-spacing: 0; }
+.b3-root .fb-toast { top: 116px; }
+.b3-root .b2-real[data-long] b { font-size: 28px; }
+
+/* a reference the person picked: the ribbon is a removable chip, like a filter tag */
+.b3-root .b3-ribbon button { position: relative; display: grid; place-items: center; width: 18px; height: 18px; margin: 0 -6px 0 6px; border-radius: 50%; background: color-mix(in oklab, var(--ink) 12%, var(--surface)); color: var(--ink); }
+.b3-root .b3-ribbon button::after { content: ''; position: absolute; inset: -13px; }
+.b3-root .b3-ribbon button:active { transform: scale(.9); }
+.b3-root .b3-better { margin-top: 12px; }
+
+/* every price on the map. Stations with a card keep the solid tag; the others get a quiet light one that floats over their dot. */
+.b-pin.quiet span { margin: 0; padding: 3px 6px 4px; border-radius: 7px; background: var(--surface); color: var(--ink-2); font-size: 13px; font-weight: 650; box-shadow: 0 1px 3px rgba(0, 0, 0, .22); animation: b3-fade .25s ease-out backwards; transition: opacity .18s; }
+.b-pin.quiet span::after { content: none; }
+.b-pin.quiet.mini { pointer-events: none; }
+.b-pin.quiet.mini span { width: auto; height: auto; padding: 3px 6px 4px; border-radius: 7px; font-size: 13px; opacity: 0; box-shadow: 0 1px 3px rgba(0, 0, 0, .22); }
+.b3-root .b-pin.quiet::before { inset: -9px -4px -12px; }
+/* far away: the lowest price of each region (the map library moves the button itself, so the look lives on the inner span) */
+.b-region { padding: 0; cursor: pointer; visibility: hidden; transition: visibility 0s .2s; }
+.b-region > span { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 11px 7px; border-radius: 13px; background: var(--surface); color: var(--ink); box-shadow: var(--shadow-1); opacity: 0; transition: opacity .2s, transform .18s var(--spring); }
+.b-region small { font: 600 12px/1 var(--font-ui); color: var(--ink-2); white-space: nowrap; }
+.b-region b { font: 750 18px/1 var(--font-num); letter-spacing: .02em; }
+.b-region:active > span { transform: scale(.95); }
+[data-band='region'] .b-region:not(.b-area):not(.mini), [data-band='area'] .b-area:not(.mini) { visibility: visible; transition: none; }
+[data-band='region'] .b-region:not(.b-area):not(.mini) > span, [data-band='area'] .b-area:not(.mini) > span { opacity: 1; }
+/* in-between zooms: the same bubble for smaller areas, a touch smaller */
+.b-area > span { padding: 5px 9px 6px; border-radius: 11px; gap: 2px; }
+.b-area small { max-width: 104px; overflow: hidden; text-overflow: ellipsis; }
+.b-area b { font-size: 16px; }
+[data-band='area'] .b-pin.quiet { pointer-events: none; }
+[data-band='area'] .b-pin.quiet span { opacity: 0; }
+[data-band='region'] .b-pin { pointer-events: none; }
+[data-band='region'] .b-pin span { opacity: 0; }
+.b-pin span { transition: transform .28s var(--spring), background .2s, opacity .2s; }
+@keyframes b3-fade { from { opacity: 0; transform: translateY(3px); } }
+@media (prefers-reduced-motion: reduce) { .b-pin.quiet span { animation: none; } }
+
+/* a reference tag that has to shrink becomes a plain dot like the others */
+.b-pin.ref.mini:not(.on) span { min-width: 0; padding: 0; }
