@@ -4,7 +4,9 @@ name: Collect prices
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # GitHub may run this late or skip a run when it is busy; the history then has a small gap
+    # Every 5 minutes, starting at minute 2: GitHub is busiest at the start of each hour and advises against it.
+    # It may still run this late or skip a run when it is busy; the history then has a small gap.
+    - cron: '2-59/5 * * * *'
   workflow_dispatch:
 
 permissions:
