@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-28T19:15:00Z",
+  "generatedAt": "2026-11-28T19:20:00Z",
   "since": "2026-11-26T20:25:00Z",
   "stations": 2476,
-  "changes": 54,
+  "changes": 16,
   "skipped": [
     {
       "name": "Hub Régie",
